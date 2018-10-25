@@ -61,7 +61,7 @@ module Klaviyo
     end
 
     def lists
-      RestClient.get("#{@url}/api/v1/lists", params: {api_key: @api_key}) do |response, request, result, &block|
+      RestClient.get("#{@url}api/v2/lists", params: {api_key: @api_key}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
@@ -73,12 +73,13 @@ module Klaviyo
     def add_to_list(email, list_id, properties, confirm_optin)
       payload = {
         api_key: @api_key,
-        email: email,
-        properties: properties,
-        confirm_optin: confirm_optin
+        profiles: [
+          { email: email }.merge(properties)
+        ]
       }
 
-      RestClient.post("#{@url}/api/v1/list/#{list_id}/members", payload) do |response, request, result, &block|
+      sub_or_members = confirm_optin ? 'subscribe' : 'members'
+      RestClient.post("#{@url}api/v2/list/#{list_id}/#{sub_or_members}", payload.to_json, {content_type: :json, accept: :json}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
@@ -88,7 +89,7 @@ module Klaviyo
     end
 
     def get_profile(id)
-      RestClient.get("#{@url}/api/v1/person/#{id}", params: {api_key: @api_key}) do |response, request, result, &block|
+      RestClient.get("#{@url}api/v1/person/#{id}", params: {api_key: @api_key}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
@@ -99,7 +100,7 @@ module Klaviyo
 
     def update_profile(id, properties)
       payload = properties.merge(api_key: @api_key)
-      RestClient.put("#{@url}/api/v1/person/#{id}", payload) do |response, request, result, &block|
+      RestClient.put("#{@url}api/v1/person/#{id}", payload) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
