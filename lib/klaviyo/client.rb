@@ -51,6 +51,9 @@ module Klaviyo
           puts "response body: #{response.body}"
           #JSON.parse(response)
         else
+          puts "error"
+          puts "response: #{response}"
+          puts "response body: #{response.body}"
           raise KlaviyoError.new(JSON.parse(response))
         end
       end
