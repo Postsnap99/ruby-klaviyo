@@ -27,8 +27,8 @@ module Klaviyo
       value = kwargs[:properties]["value"] || 0
 
       params = {
-        :type => 'event',
         :token => @api_key,
+        :type => 'event',
         :attributes => {
           "properties" => kwargs[:properties], 
           "time" => time, 
@@ -66,8 +66,8 @@ module Klaviyo
       properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
       params = build_params({
-        :type => 'profile',
         :token => @api_key,
+        :type => 'profile',
         :attributes => properties
       })
       request('api/profiles', params)
