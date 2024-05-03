@@ -32,7 +32,7 @@ module Klaviyo
         :attributes => {
           "properties" => kwargs[:properties], 
           "time" => time, 
-          "value" => value, 
+          "$value" => value, 
           "value_currency" => "USD", 
           "metric" => {"data"=>{"type"=>"metric", "attributes"=>{"name"=>event}}},
           "profile" => {"data"=>{"type"=>"profile", "attributes"=>customer_properties}}
