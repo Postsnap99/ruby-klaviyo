@@ -26,8 +26,7 @@ module Klaviyo
       time = kwargs[:time].to_time.to_i if kwargs[:time]
       value = kwargs[:properties]["value"] || 0
 
-      params = {
-        :token => @api_key,
+      payload = {
         :type => 'event',
         :attributes => {
           "properties" => kwargs[:properties], 
@@ -39,13 +38,17 @@ module Klaviyo
         }
       }
 
-      puts "params before convert to json:"
-      puts params
+      puts "\n\n\npayload:"
+      puts payload
+      puts "\n\n\n"
 
-      params = build_params(params)
-      puts "params after convert to json:"
-      puts params
-      request('api/events', params)
+      RestClient.post("#{@url}api/events", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: @api_key}) do |response, request, result, &block|
+        if response.code == 200
+          JSON.parse(response)
+        else
+          raise KlaviyoError.new(JSON.parse(response))
+        end
+      end
     end
 
     def track_once(event, opts = {})
