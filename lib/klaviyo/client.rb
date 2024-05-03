@@ -42,7 +42,7 @@ module Klaviyo
       puts payload
       puts "\n\n\n"
 
-      RestClient.post("#{@url}api/events", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: @api_key}) do |response, request, result, &block|
+      RestClient.post("#{@url}api/events", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
