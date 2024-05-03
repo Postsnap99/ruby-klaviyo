@@ -27,14 +27,16 @@ module Klaviyo
       value = kwargs[:properties]["value"] || 0
 
       payload = {
-        :type => 'event',
-        :attributes => {
-          "properties" => kwargs[:properties], 
-          "time" => time, 
-          "$value" => value, 
-          "value_currency" => "USD", 
-          "metric" => {"data"=>{"type"=>"metric", "attributes"=>{"name"=>event}}},
-          "profile" => {"data"=>{"type"=>"profile", "attributes"=>customer_properties}}
+        :data => {
+          :type => 'event',
+          :attributes => {
+            "properties" => kwargs[:properties], 
+            "time" => time, 
+            "$value" => value, 
+            "value_currency" => "USD", 
+            "metric" => {"data"=>{"type"=>"metric", "attributes"=>{"name"=>event}}},
+            "profile" => {"data"=>{"type"=>"profile", "attributes"=>customer_properties}}
+          }
         }
       }
 
