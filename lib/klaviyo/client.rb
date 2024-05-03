@@ -32,7 +32,11 @@ module Klaviyo
       }
       params[:time] = kwargs[:time].to_time.to_i if kwargs[:time]
 
+      puts "params before convert to json:"
+      puts params
+
       params = build_params(params)
+      puts "params after convert to json:"
       puts params
       request('api/track', params)
     end
