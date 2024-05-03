@@ -23,7 +23,7 @@ module Klaviyo
       customer_properties[:email] = kwargs[:email] unless kwargs[:email].to_s.empty?
       customer_properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
-      time = kwargs[:time].to_time.to_i if kwargs[:time]
+      time = kwargs[:time].strftime("%FT%T") if kwargs[:time]
       value = kwargs[:properties]["value"] || 0
 
       payload = {
@@ -32,7 +32,7 @@ module Klaviyo
           :attributes => {
             "properties" => kwargs[:properties], 
             "time" => time, 
-            "$value" => value, 
+            "value" => value, 
             "value_currency" => "USD", 
             "metric" => {"data"=>{"type"=>"metric", "attributes"=>{"name"=>event}}},
             "profile" => {"data"=>{"type"=>"profile", "attributes"=>customer_properties}}
