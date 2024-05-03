@@ -23,14 +23,21 @@ module Klaviyo
       customer_properties[:email] = kwargs[:email] unless kwargs[:email].to_s.empty?
       customer_properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
+      time = kwargs[:time].to_time.to_i if kwargs[:time]
+      value = kwargs[:properties]["value"] || 0
+
       params = {
+        :type => 'event',
         :token => @api_key,
-        :event => event,
-        :properties => kwargs[:properties],
-        :customer_properties => customer_properties,
-        :ip => ''
+        :attributes => {
+          "properties" => kwargs[:properties], 
+          "time" => time, 
+          "value" => value, 
+          "value_currency" => "USD", 
+          "metric" => {"data"=>{"type"=>"metric", "attributes"=>{"name"=>event}}},
+          "profile" => {"data"=>{"type"=>"profile", "attributes"=>customer_properties}}
+        }
       }
-      params[:time] = kwargs[:time].to_time.to_i if kwargs[:time]
 
       puts "params before convert to json:"
       puts params
@@ -38,7 +45,7 @@ module Klaviyo
       params = build_params(params)
       puts "params after convert to json:"
       puts params
-      request('api/track', params)
+      request('api/events', params)
     end
 
     def track_once(event, opts = {})
@@ -59,14 +66,15 @@ module Klaviyo
       properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
       params = build_params({
+        :type => 'profile',
         :token => @api_key,
-        :properties => properties
+        :attributes => properties
       })
-      request('api/identify', params)
+      request('api/profiles', params)
     end
 
     def lists
-      RestClient.get("#{@url}api/v2/lists", params: {api_key: @api_key}) do |response, request, result, &block|
+      RestClient.get("#{@url}api/lists", params: {api_key: @api_key}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
