@@ -46,7 +46,10 @@ module Klaviyo
 
       RestClient.post("#{@url}api/events", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200
-          JSON.parse(response)
+          puts "success"
+          puts "response: #{response}"
+          puts "response body: #{response.body}"
+          #JSON.parse(response)
         else
           raise KlaviyoError.new(JSON.parse(response))
         end
