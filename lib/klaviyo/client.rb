@@ -58,23 +58,22 @@ module Klaviyo
       track(event, opts)
     end
 
-    def identify(kwargs = {})
-      defaults = {:id => nil, :email => nil, :properties => {}}
-      kwargs = defaults.merge(kwargs)
-
-      if kwargs[:email].to_s.empty? and kwargs[:id].to_s.empty?
+    def identify(base_attributes = {}, custom_properties = {})
+      if base_attributes["email"].to_s.empty?
         raise KlaviyoError.new('You must identify a user by email or ID')
       end
-
-      properties = kwargs[:properties]
-      properties[:email] = kwargs[:email] unless kwargs[:email].to_s.empty?
-      properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
       payload = {
         :data => {
           :type => 'profile',
-          :attributes => properties
-        }
+          :attributes => {
+            "email" => base_attributes["email"],
+            "first_name" => base_attributes["first_name"],
+            "last_name" => base_attributes["last_name"],
+            "location" => base_attributes["location"],
+            "properties" => custom_properties
+          }
+        } 
       }
 
       puts "\n\n\npayload:"
