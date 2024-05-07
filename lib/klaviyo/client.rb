@@ -70,12 +70,20 @@ module Klaviyo
       properties[:email] = kwargs[:email] unless kwargs[:email].to_s.empty?
       properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
-      params = build_params({
-        :token => @api_key,
-        :type => 'profile',
-        :attributes => properties
-      })
-      request('api/profiles', params)
+      payload = {
+        :data => {
+          :type => 'profile',
+          :attributes => properties
+        }
+      }
+      
+      RestClient.post("#{@url}api/profile-import", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
+        if response.code == 200 || response.code == 201
+          JSON.parse(response)
+        else
+          raise KlaviyoError.new(JSON.parse(response))
+        end
+      end
     end
 
     def lists
