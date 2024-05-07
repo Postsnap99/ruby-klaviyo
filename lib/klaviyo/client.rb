@@ -76,6 +76,10 @@ module Klaviyo
           :attributes => properties
         }
       }
+
+      puts "\n\n\npayload:"
+      puts payload
+      puts "\n\n\n"
       
       RestClient.post("#{@url}api/profile-import", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200 || response.code == 201
