@@ -82,6 +82,9 @@ module Klaviyo
       
       RestClient.post("#{@url}api/profile-import", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200 || response.code == 201
+          puts "success"
+          puts "response code: #{response.code}"
+          puts "response:"
           JSON.parse(response)
         else
           raise KlaviyoError.new(JSON.parse(response))
