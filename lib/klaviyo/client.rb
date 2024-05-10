@@ -140,16 +140,6 @@ module Klaviyo
         end
       end
     end
-
-    private
-
-    def build_params(params)
-      "data=#{CGI.escape Base64.encode64(JSON.generate(params)).gsub(/\n/,'')}"
-    end
-
-    def request(path, params)
-      url = "#{@url}#{path}?#{params}"
-      open(url).read == '1'
-    end
+    
   end
 end
