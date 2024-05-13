@@ -93,7 +93,7 @@ module Klaviyo
     end
 
     def lists
-      RestClient.get("#{@url}api/lists", params: {api_key: @api_key}) do |response, request, result, &block|
+      RestClient.get("#{@url}api/lists", {accept: :json, revision: '2024-02-15', authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
@@ -140,6 +140,6 @@ module Klaviyo
         end
       end
     end
-    
+
   end
 end
