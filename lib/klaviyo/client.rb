@@ -121,7 +121,7 @@ module Klaviyo
     end
 
     def get_profile(id)
-      RestClient.get("#{@url}api/v1/person/#{id}", params: {api_key: @api_key}) do |response, request, result, &block|
+      RestClient.get("#{@url}api/profiles/#{id}", {accept: :json, revision: '2024-02-15', authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200
           JSON.parse(response)
         else
