@@ -102,39 +102,7 @@ module Klaviyo
       end
     end
 
-    def add_to_membership_list(email, list_id, properties, confirm_optin)
-      payload = {
-        :data => {
-          :type => 'profile-bulk-import-job',
-          :attributes => {
-            :profiles => {
-              :data => [{
-                :type => 'profile',
-                :attributes => {"email" => email}
-              }]
-            }
-          }, 
-          :relationships => {
-            :lists => {
-              :data => {
-                :type => 'list',
-                "id" => list_id
-              }
-            }
-          }
-        }
-      }
-
-      RestClient.post("#{@url}api/profile-bulk-import-jobs/", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
-        if response.code == 202
-          return true
-        else
-          raise KlaviyoError.new(JSON.parse(response))
-        end
-      end
-    end
-
-    def subscribe_to_newsletter(email, list_id, properties, confirm_optin)
+    def add_to_list(email, list_id)
       payload = {
         :data => {
           :type => 'profile-subscription-bulk-create-job',
@@ -156,7 +124,11 @@ module Klaviyo
           }
         }
       }
-      
+
+      puts "\n\n\npayload:"
+      puts payload
+      puts "\n\n\n"
+
       RestClient.post("#{@url}api/profile-subscription-bulk-create-jobs/", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 202
           return true
