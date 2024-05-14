@@ -112,13 +112,13 @@ module Klaviyo
                 :type => 'profile',
                 :attributes => {"email" => email}
               }]
-            }, 
-            :relationships => {
-              :lists => {
-                :data => {
-                  :type => 'list',
-                  "id" => list_id
-                }
+            }
+          }, 
+          :relationships => {
+            :lists => {
+              :data => {
+                :type => 'list',
+                "id" => list_id
               }
             }
           }
@@ -144,13 +144,13 @@ module Klaviyo
                 :type => 'profile',
                 :attributes => {"email" => email}
               }]
-            }, 
-            :relationships => {
-              :list => {
-                :data => {
-                  :type => 'list',
-                  "id" => list_id
-                }
+            }
+          },
+          :relationships => {
+            :list => {
+              :data => {
+                :type => 'list',
+                "id" => list_id
               }
             }
           }
