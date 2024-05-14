@@ -102,18 +102,64 @@ module Klaviyo
       end
     end
 
-    def add_to_list(email, list_id, properties, confirm_optin)
+    def add_to_membership_list(email, list_id, properties, confirm_optin)
       payload = {
-        api_key: @api_key,
-        profiles: [
-          { email: email }.merge(properties)
-        ]
+        :data => {
+          :type => 'profile-bulk-import-job',
+          :attributes => {
+            :profiles => {
+              :data => [{
+                :type => 'profile',
+                :attributes => {"email" => email}
+              }]
+            }, 
+            :relationships => {
+              :lists => {
+                :data => {
+                  :type => 'list',
+                  "id" => list_id
+                }
+              }
+            }
+          }
+        }
       }
 
-      sub_or_members = confirm_optin ? 'subscribe' : 'members'
-      RestClient.post("#{@url}api/v2/list/#{list_id}/#{sub_or_members}", payload.to_json, {content_type: :json, accept: :json}) do |response, request, result, &block|
-        if response.code == 200
-          JSON.parse(response)
+      RestClient.post("#{@url}api/profile-bulk-import-jobs/", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
+        if response.code == 202
+          return true
+        else
+          raise KlaviyoError.new(JSON.parse(response))
+        end
+      end
+    end
+
+    def subscribe_to_newsletter(email, list_id, properties, confirm_optin)
+      payload = {
+        :data => {
+          :type => 'profile-subscription-bulk-create-job',
+          :attributes => {
+            :profiles => {
+              :data => [{
+                :type => 'profile',
+                :attributes => {"email" => email}
+              }]
+            }, 
+            :relationships => {
+              :list => {
+                :data => {
+                  :type => 'list',
+                  "id" => list_id
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      RestClient.post("#{@url}api/profile-subscription-bulk-create-jobs/", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
+        if response.code == 202
+          return true
         else
           raise KlaviyoError.new(JSON.parse(response))
         end
