@@ -149,9 +149,23 @@ module Klaviyo
     end
 
     def update_profile(id, properties)
-      payload = properties.merge(api_key: @api_key)
-      RestClient.put("#{@url}api/v1/person/#{id}", payload) do |response, request, result, &block|
+      payload = {
+        :data => {
+          :type => 'profile',
+          :id => id,
+          :attributes => properties
+        } 
+      }
+
+      puts "\n\n\npayload:"
+      puts payload
+      puts "\n\n\n"
+      
+      RestClient.patch("#{@url}api/profiles/#{id}", payload.to_json, {accept: :json, revision: '2024-02-15', content_type: :json, authorization: "Klaviyo-API-Key #{@api_key}"}) do |response, request, result, &block|
         if response.code == 200
+          puts "success"
+          puts "response code: #{response.code}"
+          puts "response:"
           JSON.parse(response)
         else
           raise KlaviyoError.new(JSON.parse(response))
