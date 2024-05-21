@@ -23,7 +23,7 @@ module Klaviyo
       customer_properties[:email] = kwargs[:email] unless kwargs[:email].to_s.empty?
       customer_properties[:id] = kwargs[:id] unless kwargs[:id].to_s.empty?
 
-      time = kwargs[:time].strftime("%FT%T") if kwargs[:time]
+      time = kwargs[:time].strftime("%FT%T%z") if kwargs[:time]
       value = kwargs[:properties]["value"] || 0
 
       payload = {
